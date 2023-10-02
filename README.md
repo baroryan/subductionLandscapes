@@ -18,7 +18,7 @@ Duplicate the library using GitHub and then use the function `funsLongTermUplift
 t      d1    d2
 ---------------|
 \              |
-  \            |    Depth
+  \    forearc |    Depth
     \          |
       \        |
         \      |
@@ -31,9 +31,9 @@ t      d1    d2
 - From the trench to d1 - fully locked (coupling = 1).
 - From d1 to d2, coupling transitions linearly from fully locked (1) to fully creeping (0).
 
-**Objects Used:**
+**Function returns:**
 
-The function will use a bunch of classes and return three objects:
+The function will return three objects:
 
 1. An xarray object with inelastic vertical motion along the domain.
 2. Pandas dataframe with a list of earthquakes producing inelastic deformation.
