@@ -36,7 +36,7 @@ t      d1    d2
 The function will return three objects (please note it might take a while):
 
 1. An xarray object describing the permanent vertical motion along the domain.
-2. A Pandas dataframe with a list of earthquakes producing inelastic deformation.
+2. A Pandas dataframe with a list of earthquakes producing the inelastic deformation. 
 3. Max along-strike standard deviation.
 
 Feel free to contact me for more complicated cases.
