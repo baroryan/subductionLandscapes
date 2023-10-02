@@ -4,7 +4,7 @@ This library is designed to assist you in calculating the surface deformation fi
 
 **Usage:**
 
-Duplicate the library using GitHub and then use the function `funsLongTermUpliftClassV3.ComputeLongTermDisplacement(dipAngle, distanceLocked, distanceSemiLocked, cutoff)`
+Duplicate the library using GitHub and then use the function `subductionSculpting.ComputeLongTermDisplacement(dipAngle, distanceLocked, distanceSemiLocked, cutoff)`
 
 - `dipAngle`: Dip angle of the forearc [degrees]
 - `distanceLocked`: Surface distance locked from the trench [km] (d1)
