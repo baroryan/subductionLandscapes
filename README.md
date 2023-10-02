@@ -1,4 +1,4 @@
-# Long-Term Uplift Library
+# Subduction zone landscapes libary 
 
 This library is designed to assist you in calculating the surface deformation field resulting from numerous inelastic earthquake cycles.
 
