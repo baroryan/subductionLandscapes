@@ -16,7 +16,7 @@ import inpoly
 import matplotlib.pyplot as plt
 from numba import jit, njit
 import numba
-import funsLongTermUpliftClassV2 as fs
+##import subductionSculpting as fs
 
 
 
