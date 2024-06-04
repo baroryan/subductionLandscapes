@@ -311,14 +311,11 @@ def ReturnDeepPoints(xshallow,yshallow,angle,L):
 
 #%%
 class ReturnCompressiveEarthquackePositionAngleWithShallow:
-    def __init__(self,angleObject=None):
-        self.angleObject=angleObject
+    def __init__(self):
+        pass
     
     def ReturnRandomAngle(self,N):
-        if self.angleObject is None:
-            return GenerateBinodalRandInt(30,150,N)
-        else:
-            return self.angleObject.ProduceRandomAngle(N)
+        return GenerateBinodalRandInt(30,150,N)
     
     def CheckIfTooShallowToRpture(self,depth):
         return CheckIfTooShallowToRpture(depth)
@@ -375,25 +372,19 @@ class ReturnCompressiveEarthquackePositionAngleWithShallow:
         return xrand[accepteanceIndex],yrand[accepteanceIndex],angleRandForComputingShallowPoint[accepteanceIndex],Mw[accepteanceIndex],depthExtentOfEQs[accepteanceIndex]
     
 #%%
-class angleRandom():
-    def __init__(self,minAngle=30,maxAngle=150):
-        self.minAngle=minAngle
-        self.maxAngle=maxAngle
+class ReturnCompressiveEarthquackePositionAngleWithShallow_40(ReturnCompressiveEarthquackePositionAngleWithShallow):
+    def ReturnRandomAngle(self,N):
+        return GenerateBinodalRandInt(30+10,150-10,N)
     
-    def ProduceRandomAngle(self,N):
-        return GenerateBinodalRandInt(self.minAngle,self.maxAngle,N)
+class ReturnCompressiveEarthquackePositionAngleWithShallow_20(ReturnCompressiveEarthquackePositionAngleWithShallow):
+    def ReturnRandomAngle(self,N):
+        return GenerateBinodalRandInt(30-10,150+10,N)
     
-class angleRandomWithSTD():
-    def __init__(self,minAngle=30,maxAngle=150,std=10):
-        self.minAngle=minAngle
-        self.maxAngle=maxAngle
-        self.std=std
-    
-    def ProduceRandomAngle(self,N):
+class ReturnCompressiveEarthquackePositionAngleWithShallow_std(ReturnCompressiveEarthquackePositionAngleWithShallow):
+    def ReturnRandomAngle(self,N):
         std = np.random.normal(0, 10, N)
-        angle=GenerateBinodalRandInt(self.minAngle,self.maxAngle,N)+std
-        angle=np.clip(angle,a_min=1,a_max=179)
-        return angle
+        
+        return GenerateBinodalRandInt(30,150,N)+std
     
 #%%
 class ReturnCompressiveEarthquackePositionAngleWithNoShallow(ReturnCompressiveEarthquackePositionAngleWithShallow):
@@ -508,12 +499,12 @@ class cutoffPolygonAndInterpolation:
 #%%
 class guessEQ:
         
-    def GuessEQs(self,cutoffAndIntpolationObject,maxMw,lengthOfDomain,angleObject=None):
+    def GuessEQs(self,cutoffAndIntpolationObject,maxMw,lengthOfDomain):
         
         interp_cubic_geom,cutoffPolygon=cutoffAndIntpolationObject.ReturnObjects()
         Mw=gutenbergRichter.RandomSamplerForGR(b=self.b, minMw=self.minEQsize, maxMw=maxMw,sampleSize=self.sampleSizeForOneRun)
         
-        poistionOfEQ=self.CreateTypeOfEQs(angleObject)
+        poistionOfEQ=self.CreateTypeOfEQs()
         xDeep,yDeep,angle,Mw,depthExtent=poistionOfEQ.ReturnEarthQuckesPositionAndAngle(Mw,cutoffPolygon,cutoffPolygon,interp_cubic_geom)
         slip,alongStrikeLength=ComputeSlipAndLength(Mw,depthExtent)
         
@@ -526,8 +517,8 @@ class guessEQ:
         
         return faultsDataFrame
     
-    def CreateTypeOfEQs(self,angleObject):
-        return ReturnCompressiveEarthquackePositionAngleWithShallow(angleObject)
+    def CreateTypeOfEQs(self):
+        return ReturnCompressiveEarthquackePositionAngleWithShallow()
     
     def GuessUniformRandomEQs(self,cutoffAndIntpolationObject,N):
         _,cutoffPolygon=cutoffAndIntpolationObject.ReturnObjects()
@@ -544,7 +535,7 @@ class guessEQNoShallow(guessEQ):
 
 #%%
 class longTermUplift(guessEQ):
-    def __init__(self,sampleSizeForOneRun=1e7,minRationOfMeanToStd=0.2,a=1,b=0.9,maxIteration=100,maxSizeOfDomain=5,dx=4,ny=70,minEQsize=5,maxEQsize=None,maxNumOfEQs=None,angleObject=None):
+    def __init__(self,sampleSizeForOneRun=1e7,minRationOfMeanToStd=0.2,a=1,b=0.9,maxIteration=100,maxSizeOfDomain=5,dx=4,ny=70,minEQsize=5,maxEQsize=None,maxNumOfEQs=None):
 
         self.sampleSizeForOneRun=sampleSizeForOneRun
         self.minRationOfMeanToStd=minRationOfMeanToStd
@@ -558,7 +549,7 @@ class longTermUplift(guessEQ):
         self.minEQsize=minEQsize
         self.maxNumOfEQs=maxNumOfEQs
         self.maxEQsize=maxEQsize
-        self.angleObject=angleObject
+        
         
         #finalDisplacment,allFaultsDataFrame,ratioOfMeanToStd=self.ComputeLongTermDisplacement(cutoffAndIntpolationObject)
         
@@ -593,13 +584,11 @@ class longTermUplift(guessEQ):
         faults=elasticDislocations3d.LoadThurstFaultsAtMidPoint(faultsDataFrame)
         return faults
         
-    def ComputeLongTermDisplacement(self,cutoffAndIntpolationObject,angleObject=None):
+    def ComputeLongTermDisplacement(self,cutoffAndIntpolationObject):
         """ compute long term uplift for dipAngle,distanceLocked,distaneSemi locked and cutoff, can also use a mesh given from above.
         return xarrays object. Can also give sample size
         This fuctions runs until cutoff is reached. But it does it compution on very low res array and then compute it on high res array for all EQs"""
     
-        if angleObject is None:
-            angleObject=self.angleObject
         t1=time.time()
 
         maxMw=self.GetMaxMw(cutoffAndIntpolationObject)
@@ -615,7 +604,7 @@ class longTermUplift(guessEQ):
         while ratioOfMeanToStd>self.minRationOfMeanToStd and c<self.maxIteration:
             print("adding more EQs because ratioOfMeanToStd is: "+str(np.round(ratioOfMeanToStd*100,2))+" and I only have "+str(totalNumOfEQs)+ " EQs",flush='True')
             
-            faultsDataFrame=self.GuessEQs(cutoffAndIntpolationObject, maxMw, lengthOfDomain,angleObject=angleObject)
+            faultsDataFrame=self.GuessEQs(cutoffAndIntpolationObject, maxMw, lengthOfDomain)
             totalNumOfEQs=totalNumOfEQs+len(faultsDataFrame)
             
             if self.maxNumOfEQs is not None and self.maxNumOfEQs>0: 
@@ -788,7 +777,7 @@ def ComputeLongTermDisplacement(dipAngle,distanceLocked,distanceSemiLocked,cutof
     faultsList=[]
     while ratioOfMeanToStd>minRationOfMeanToStd and c<35:
         
-        Mw=gutenbergRichter.RandomSamplerForGR(b=1, minMw=5, maxMw=maxMw,sampleSize=sampleSizeForOneRun)
+        Mw=gutenbergRichter.RandomSampleForGR(b=1, minMw=5, maxMw=maxMw,sampleSize=sampleSizeForOneRun)
         xDeep,yDeep,angle,Mw,depthExtent=ReturnEarthQuckesPositionAndAngle(Mw,cutoffPolygon,cutoffPolygon,interp_cubic_geom)
         slip,alongStrikeLength=ComputeSlipAndLength(Mw,depthExtent)
         
