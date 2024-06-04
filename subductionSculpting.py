@@ -777,7 +777,7 @@ def ComputeLongTermDisplacement(dipAngle,distanceLocked,distanceSemiLocked,cutof
     faultsList=[]
     while ratioOfMeanToStd>minRationOfMeanToStd and c<35:
         
-        Mw=gutenbergRichter.RandomSampleForGR(b=1, minMw=5, maxMw=maxMw,sampleSize=sampleSizeForOneRun)
+        Mw=gutenbergRichter.RandomSamplerForGR(b=1, minMw=5, maxMw=maxMw,sampleSize=sampleSizeForOneRun)
         xDeep,yDeep,angle,Mw,depthExtent=ReturnEarthQuckesPositionAndAngle(Mw,cutoffPolygon,cutoffPolygon,interp_cubic_geom)
         slip,alongStrikeLength=ComputeSlipAndLength(Mw,depthExtent)
         
