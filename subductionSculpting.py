@@ -775,10 +775,12 @@ def ComputeLongTermDisplacement(dipAngle,distanceLocked,distanceSemiLocked,cutof
     
     c=0
     faultsList=[]
+    eqsToUse=ReturnCompressiveEarthquackePositionAngleWithShallow()
     while ratioOfMeanToStd>minRationOfMeanToStd and c<35:
         
         Mw=gutenbergRichter.RandomSamplerForGR(b=1, minMw=5, maxMw=maxMw,sampleSize=sampleSizeForOneRun)
-        xDeep,yDeep,angle,Mw,depthExtent=ReturnEarthQuckesPositionAndAngle(Mw,cutoffPolygon,cutoffPolygon,interp_cubic_geom)
+        
+        xDeep,yDeep,angle,Mw,depthExtent=eqsToUse.ReturnEarthQuckesPositionAndAngle(Mw,cutoffPolygon,cutoffPolygon,interp_cubic_geom)
         slip,alongStrikeLength=ComputeSlipAndLength(Mw,depthExtent)
         
         
